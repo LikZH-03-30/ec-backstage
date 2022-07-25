@@ -21,7 +21,7 @@
           <el-input
             placeholder="请输入账号"
             v-model="loginForm.username"
-            prefix-icon="iconfont icon-yonghu-copy"
+            prefix-icon="iconfont icon-user"
           ></el-input>
         </el-form-item>
         <!-- 用户名账号 -->
@@ -31,7 +31,7 @@
             placeholder="请输入密码"
             type="password"
             v-model="loginForm.password"
-            prefix-icon="iconfont icon-suoding "
+            prefix-icon="iconfont icon-3702mima"
           ></el-input>
         </el-form-item>
         <!-- 用户名密码 -->
@@ -99,7 +99,7 @@ export default {
         window.sessionStorage.setItem('token', res.data.token)
         // 通过编程式导航
         this.$router.push('/home')
-        console.log(res)
+        // console.log(res)
       })
       // try {
       //   await this.$refs.loginForm.validate()

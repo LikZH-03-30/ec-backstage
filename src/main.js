@@ -11,6 +11,12 @@ import axios from 'axios'
 // // 配置请求的根路径
 axios.defaults.baseURL = 'http://liufusong.top:8899/api/private/v1/'
 Vue.prototype.$http = axios
+// 配置请求拦截器,什么时候要用到呢？ 判断用户登录没,访问其他功能的时候看有没有携带token
+axios.interceptors.request.use((config) => {
+  // console.log(config)
+  config.headers.Authorization = window.sessionStorage.getItem('token')
+  return config
+})
 Vue.config.productionTip = false
 
 new Vue({

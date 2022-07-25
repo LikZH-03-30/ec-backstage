@@ -15,5 +15,6 @@ module.exports = {
     'vue/no-mutating-props': 'off',
     'eol-last': 'off',
     'vue/multi-word-component-names': 'off'
+    // 'quote-props': 'off'
   }
 }
