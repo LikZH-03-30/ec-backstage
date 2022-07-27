@@ -52,7 +52,7 @@
         </el-table-column>
         <el-table-column label="操作" width="180px">
           <template slot-scope="scope">
-            {{ scope.status }}
+            <!-- {{ scope.status }} -->
             <!-- 编辑按钮 -->
             <el-button
               type="primary"
@@ -75,6 +75,7 @@
               :enterable="false"
             >
               <el-button
+                @click="AllotRole(scope.row)"
                 type="warning"
                 icon="el-icon-setting"
                 size="mini"
@@ -163,6 +164,29 @@
         <el-button type="primary" @click="editUserInfo">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 分配权限的对话框 -->
+    <el-dialog @close='editDialogClosed' title="提示" :visible.sync="setRoleDialogVisible" width="50%">
+      <div>
+        <p>当前的用户:{{ userInfo.username }}</p>
+        <p>当前的角色:{{ userInfo.role_name }}</p>
+        <p>
+          分配当前新角色:
+          <el-select v-model="selectedRoleId" placeholder="请选择">
+            <el-option
+              v-for="item in rolesList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="seveRoleInfo">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -180,7 +204,6 @@ export default {
       },
       userlist: [],
       total: 0,
-      isShowVisible: false, // 弹出框默认是关闭
       addForm: {
         username: '',
         password: '',
@@ -239,10 +262,19 @@ export default {
           }
         ]
       },
+      isShowVisible: false, // 弹出框默认是关闭
       // 控制修改用户对话框的显示与隐藏
       editDialogVisble: false,
+      // 控制分配角色对话框的显示与隐藏
+      setRoleDialogVisible: false,
       // 查询到的用户信息对象
       editForm: {},
+      // 需要被分配的用户信息
+      userInfo: {},
+      // 分配角色的数据列表
+      rolesList: [],
+      // 分配角色双向绑定的v-model变量
+      selectedRoleId: '',
       // 修改弹出框用户的表单验证
       editFormRules: {
         email: [
@@ -341,12 +373,11 @@ export default {
       if (res.meta.status !== 200) {
         return this.$message.error('查询用户信息失败')
       }
-      // this.$message.success('查询用户信息成功')
       this.editForm = res.data
       this.editDialogVisble = true
       // console.log(res)
     },
-    // 监听修改用户对话框的关闭事件
+    // 监听修改用户对话框的关闭事件 清空对话框
     editDialogCloseed() {
       this.$refs.editFormRef.resetFields()
     },
@@ -394,6 +425,46 @@ export default {
       // 渲染页面
       this.getUserList()
       // console.log('成功删除')
+    },
+    // 点击分配角色 弹出的业务
+    async AllotRole(userInfo) {
+      // 获取用户信息
+      this.userInfo = userInfo
+      // 弹层显示之前获取所有分配角色数据
+      const { data: res } = await this.$http.get('roles')
+      // console.log(res)
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取角色列表属性失败')
+      }
+      // 吧他存到数组中
+      this.rolesList = res.data
+      // 打开弹层
+      this.setRoleDialogVisible = true
+      // console.log(res)
+    },
+    // 点击按钮让用户分配角色
+    async seveRoleInfo() {
+      // 判断用户有没有选择分配角色
+      if (!this.selectedRoleId) {
+        return this.$message.error('请选择要分配的用户角色')
+      }
+      // 如果分配了就是点了确定,那么走下面的逻辑
+      const { data: res } = await this.$http.put(
+        `users/${this.userInfo.id}/role`,
+        {
+          rid: this.selectedRoleId
+        }
+      )
+      if (res.meta.status !== 200) return this.$message.error('更新角色失败')
+      this.$message.success('更新角色成功')
+      this.getUserList()
+      // 关闭弹层
+      this.setRoleDialogVisible()
+    },
+    // 分配完角色之后重置下拉框里的内容
+    editDialogClosed() {
+      this.selectedRoleId = ''
+      this.userInfo = ''
     }
   }
 }
