@@ -125,9 +125,14 @@
       </span>
     </el-dialog>
     <!-- 编辑角色信息 -->
-    <el-dialog title="提示" :visible.sync="RedactVisible" width="50%">
+    <el-dialog @close='editNb' title="提示" :visible.sync="RedactVisible" width="50%">
       <!-- 修改弹出框的表单验证 -->
-      <el-form ref="RedactFormRef" :model="RedactForm" :rules="RedactsFormRules" label-width="80px">
+      <el-form
+        ref="RedactFormRef"
+        :model="RedactForm"
+        :rules="RedactsFormRules"
+        label-width="80px"
+      >
         <el-form-item label="角色名称" prop="roleName">
           <!-- disabled  禁止输入 -->
           <el-input v-model="RedactForm.roleName"></el-input>
@@ -324,6 +329,7 @@ export default {
         return this.$message.error('查询用户信息失败')
       }
       // console.log(this.RedactForm)
+      // 数据回写
       this.RedactForm = res.data
       // 关闭弹层
       this.RedactVisible = true
@@ -349,6 +355,15 @@ export default {
         this.getRolesList()
         this.RedactVisible = false // 吧弹出层关闭
       })
+    },
+    // 监听修改用户对话框的关闭事件 清空对话框
+    editNb() {
+      this.$refs.RedactFormRef.resetFields()
+      // 清楚表单的校验
+      this.RedactForm = {
+        roleName: '',
+        roleDesc: ''
+      }
     }
   }
 }
