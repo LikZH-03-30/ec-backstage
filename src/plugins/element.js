@@ -27,7 +27,8 @@ import {
   Tag,
   Tree,
   Select,
-  Option
+  Option,
+  Cascader
 } from 'element-ui'
 Vue.use(Button)
 Vue.use(Form)
@@ -58,6 +59,7 @@ Vue.use(Tree)
 
 Vue.use(Select)
 Vue.use(Option)
+Vue.use(Cascader)
 // 导入弹框提示
 // 吧弹框组件挂载在全局上，这样没一个组件都能用this访问到message
 Vue.prototype.$message = Message
