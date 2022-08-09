@@ -92,6 +92,7 @@ export default {
   methods: {
     loginout() {
       // console.log(111)
+      console.log(2222)
       window.sessionStorage.clear()
       this.$router.push('/login')
     },
