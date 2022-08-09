@@ -71,6 +71,7 @@ export default {
   // 在vue生命周期加载的时候就调用它
   created() {
     this.getMenuList()
+    console.log(111)
     this.activePath = window.sessionStorage.getItem('activePath')
   },
   data() {

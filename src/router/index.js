@@ -38,6 +38,10 @@ const router = new VueRouter({
         {
           path: '/categories',
           component: () => import('@/components/goods/cate.vue')
+        },
+        {
+          path: '/params',
+          component: () => import('@/components/goods/params.vue')
         }
       ]
     }
